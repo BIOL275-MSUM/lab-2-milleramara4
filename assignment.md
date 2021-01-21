@@ -62,7 +62,7 @@ sem
     ## [1] 0.3130568
 
 And finally, I can see the 95% confidence interval ranges from a minimum
-of \_\_\_ to a maximum of \_\_\_
+of 4.203409 to a maximum of 5.430591
 
 ``` r
 mean(x) + 1.96 * sem
@@ -87,65 +87,6 @@ chicks in an experiment. The first five numbers come from chicks that
 were fed organic grain while the second were fed non-organic grain.
 
 We could visualize the data as follows.
-
-``` r
-library(tidyverse)
-```
-
-    ## -- Attaching packages --------------------------------------- tidyverse 1.3.0 --
-
-    ## v ggplot2 3.3.3     v purrr   0.3.4
-    ## v tibble  3.0.4     v dplyr   1.0.2
-    ## v tidyr   1.1.2     v stringr 1.4.0
-    ## v readr   1.4.0     v forcats 0.5.0
-
-    ## -- Conflicts ------------------------------------------ tidyverse_conflicts() --
-    ## x dplyr::filter() masks stats::filter()
-    ## x dplyr::lag()    masks stats::lag()
-
-``` r
-# check to make sure you did the part above correctly
-# if not, generate some fake x data
-if (!exists("x") | !is.numeric(x) | !length(x) == 10) x <- rep(1, 10)
-
-# put the chick data into a data frame
-chick_data <-
-  tibble::tibble(
-    diet = rep(c("Combined", "Combined", "Organic", "Non-Organic"), each = 5),
-    weight = c(x, x)
-  )
-
-# summarize the chick weights by diet
-chick_summary <-
-  chick_data %>% 
-  group_by(diet) %>% 
-  summarize(
-    mean = mean(weight),
-    median = median(weight),
-    sd = sd(weight),
-    n = n(),
-    sem = sd / sqrt(n),
-    upper = mean + 1.96 * sem,   # upper confidence limit
-    lower = mean - 1.96 * sem,   # lower confidence limit
-    .groups = "drop"
-  )
-
-# plot chick weights
-ggplot(chick_data, aes(x = diet, y = weight, color = diet, fill = diet)) +
-  geom_jitter(size = 5, shape = 21, alpha = 0.5, width = 0.1) +
-  geom_crossbar(
-    mapping = aes(ymin = lower, ymax = upper, y = mean), 
-    data = chick_summary,
-    width = 0.2, alpha = 0.2
-  ) +
-  labs(
-    title = "Weights of chicks fed organic and non-organic grain",
-    x = "Diet",
-    color = "Diet",
-    fill = "Diet",
-    y = "Weight (g)"
-  )
-```
 
 ![](assignment_files/figure-gfm/unnamed-chunk-1-1.png)<!-- -->
 
